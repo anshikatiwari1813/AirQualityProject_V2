@@ -1,4 +1,19 @@
-﻿attrs==26.1.0
+﻿streamlit==1.58.0
+
+numpy==1.26.4
+pandas==2.2.2
+scikit-learn==1.4.2
+scipy==1.11.4
+
+matplotlib==3.8.4
+seaborn==0.13.2
+
+xgboost==2.0.3
+shap==0.52.0
+
+joblib==1.5.3
+
+attrs==26.1.0
 blinker==1.9.0
 cachetools==7.1.4
 certifi==2026.5.20
@@ -10,20 +25,15 @@ h11==0.16.0
 httptools==0.8.0
 idna==3.18
 itsdangerous==2.2.0
-joblib==1.5.3
 kiwisolver==1.5.0
 MarkupSafe==3.0.3
-narwhals==2.22.0
-numpy==2.4.6
 packaging==26.2
 pillow==12.2.0
 protobuf==7.35.0
 pyarrow==24.0.0
 pyparsing==3.3.2
 python-multipart==0.0.30
-rpds-py==2026.5.1
 six==1.17.0
-smmap==5.0.3
 tenacity==9.1.4
 threadpoolctl==3.6.0
 toml==0.10.2
@@ -32,5 +42,3 @@ tzdata==2026.2
 urllib3==2.7.0
 watchdog==6.0.0
 websockets==16.0
-shap== 0.52.0
-matplotlib==3.10.0
