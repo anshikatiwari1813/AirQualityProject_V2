@@ -33,3 +33,4 @@ urllib3==2.7.0
 watchdog==6.0.0
 websockets==16.0
 shap== 0.52.0
+matplotlib==3.10.0
