@@ -77,6 +77,7 @@ elif page == "AQI Calculator":
 
 elif page == "AQI Prediction (XGBoost)":
     show_xgboost_prediction()
+
 elif page == "LSTM Forecasting":
     forecasting.show_forecasting()
 
