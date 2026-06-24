@@ -1,0 +1,70 @@
+# PHASE 1: DOMAIN UNDERSTANDING
+
+## 1. What is AQI?
+
+Air Quality Index (AQI) is a measure used to indicate the quality of air and its impact on human health. It converts pollutant concentrations into a single numerical value ranging from 0 to 500.
+
+| AQI Range | Category     |
+| --------- | ------------ |
+| 0-50      | Good         |
+| 51-100    | Satisfactory |
+| 101-200   | Moderate     |
+| 201-300   | Poor         |
+| 301-400   | Very Poor    |
+| 401-500   | Severe       |
+
+---
+
+## 2. Why Air Pollution Matters?
+
+Air pollution affects both human health and the environment.
+
+### Health Impacts
+
+* Asthma
+* Respiratory diseases
+* Heart problems
+* Eye irritation
+
+### Environmental Impacts
+
+* Smog
+* Acid rain
+* Climate change
+* Reduced visibility
+
+---
+
+## 3. Major Pollutants
+
+| Pollutant | Source                         | Health Impact      |
+| --------- | ------------------------------ | ------------------ |
+| PM2.5     | Vehicles, Industries           | Lung damage        |
+| PM10      | Dust, Construction             | Respiratory issues |
+| NO₂       | Vehicle emissions              | Asthma             |
+| SO₂       | Coal plants                    | Breathing problems |
+| CO        | Fuel combustion                | Oxygen deficiency  |
+| O₃        | Chemical reactions in sunlight | Chest pain         |
+
+---
+
+## 4. Safe Limits
+
+| Pollutant | Safe Limit |
+| --------- | ---------- |
+| PM2.5     | 60 µg/m³   |
+| PM10      | 100 µg/m³  |
+| NO₂       | 80 µg/m³   |
+| SO₂       | 80 µg/m³   |
+| CO        | 2 mg/m³    |
+| O₃        | 100 µg/m³  |
+
+---
+
+## 5. How AQI Prediction Works?
+
+AQI prediction uses historical pollution data, weather data, and machine learning models to forecast future air quality levels. In this project, XGBoost is used to predict AQI for the next 1 hour, 6 hours, and 24 hours.
+
+## Conclusion
+
+AQI monitoring and prediction help in identifying pollution trends and protecting public health. Understanding pollutants and their impacts is essential for building an effective Air Quality Prediction and Monitoring System.

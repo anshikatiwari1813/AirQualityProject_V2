@@ -1,0 +1,6 @@
+Dataset contains 707875 records and 16 columns.
+
+The dataset includes pollutant concentrations,
+AQI values, and city information.
+
+Missing values were observed in several pollutant columns.
