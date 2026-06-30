@@ -1,28 +1,24 @@
 import streamlit as st
-import sqlite3
 import pandas as pd
+
+from sqlalchemy import text
+from database.postgres_db import engine
 
 
 def show_prediction_history():
 
     st.title("📜 Prediction History")
 
-    conn = sqlite3.connect(
-        "air_quality.db"
-    )
+    with engine.connect() as conn:
 
-    query = """
-    SELECT *
-    FROM predictions
-    ORDER BY id DESC
-    """
-
-    df = pd.read_sql(
-        query,
-        conn
-    )
-
-    conn.close()
+        df = pd.read_sql(
+            text("""
+            SELECT *
+            FROM predictions
+            ORDER BY id DESC
+            """),
+            conn
+        )
 
     if df.empty:
 
@@ -38,7 +34,7 @@ def show_prediction_history():
 
     st.dataframe(
         df,
-        width="stretch"
+        use_container_width=True
     )
 
     st.subheader("📈 AQI Trend")
@@ -90,4 +86,4 @@ def show_prediction_history():
         csv,
         "prediction_history.csv",
         "text/csv"
-)
+    )

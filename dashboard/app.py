@@ -1,4 +1,10 @@
 import streamlit as st
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from database.init_postgres import initialize_database
+
+
 
 # ====================================
 # PAGE CONFIG
@@ -9,6 +15,8 @@ st.set_page_config(
     page_icon="🌍",
     layout="wide"
 )
+
+initialize_database()
 
 # ====================================
 # IMPORT MODULES
@@ -30,6 +38,7 @@ from modules.prediction_history import show_prediction_history
 from modules.database_analytics import show_database_analytics
 from modules.reports import show_reports
 from modules.about import show_about
+from database.init_postgres import initialize_database
 
 # ====================================
 # SIDEBAR

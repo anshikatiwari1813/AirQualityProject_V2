@@ -4,41 +4,56 @@ import pandas as pd
 print("HOTSPOT MODULE LOADED")
 
 
-
 def get_hotspot_level(aqi):
 
-    if aqi <= 100:
-        return "🟢 Safe Zone"
+    try:
 
-    elif aqi <= 200:
-        return "🟡 Moderate Zone"
+        aqi = float(aqi)
 
-    elif aqi <= 300:
-        return "🟠 High Risk Zone"
+        if aqi <= 100:
+            return "🟢 Safe Zone"
 
-    elif aqi <= 400:
-        return "🔴 Severe Hotspot"
+        elif aqi <= 200:
+            return "🟡 Moderate Zone"
 
-    else:
-        return "⚫ Critical Hotspot"
+        elif aqi <= 300:
+            return "🟠 High Risk Zone"
+
+        elif aqi <= 400:
+            return "🔴 Severe Hotspot"
+
+        else:
+            return "⚫ Critical Hotspot"
+
+    except:
+
+        return "Unknown"
 
 
 def recommendation(aqi):
 
-    if aqi <= 100:
-        return "Normal outdoor activities"
+    try:
 
-    elif aqi <= 200:
-        return "Sensitive people should reduce exposure"
+        aqi = float(aqi)
 
-    elif aqi <= 300:
-        return "Wear mask outdoors"
+        if aqi <= 100:
+            return "Normal outdoor activities"
 
-    elif aqi <= 400:
-        return "Avoid prolonged outdoor activities"
+        elif aqi <= 200:
+            return "Sensitive people should reduce exposure"
 
-    else:
-        return "Stay indoors. Health emergency."
+        elif aqi <= 300:
+            return "Wear mask outdoors"
+
+        elif aqi <= 400:
+            return "Avoid prolonged outdoor activities"
+
+        else:
+            return "Stay indoors. Health emergency."
+
+    except:
+
+        return "No recommendation available"
 
 
 def show_hotspot_detection():
@@ -59,12 +74,22 @@ def show_hotspot_detection():
 
     if uploaded_file is None:
 
-        st.info("Upload AQI dataset to begin analysis.")
+        st.info(
+            "Upload AQI dataset to begin analysis."
+        )
+
         return
-        
+
+    # =====================================
+    # LOAD DATASET
+    # =====================================
+
     try:
 
         df = pd.read_csv(uploaded_file)
+
+        # REMOVE DUPLICATE COLUMNS
+        df = df.loc[:, ~df.columns.duplicated()]
 
         st.success(
             f"{len(df)} records loaded successfully"
@@ -74,23 +99,31 @@ def show_hotspot_detection():
 
         st.dataframe(
             df.head(),
-            width="stretch"
+            use_container_width=True
         )
 
     except Exception as e:
 
-        st.error(f"Dataset Error: {e}")
+        st.error(
+            f"Dataset Error: {e}"
+        )
+
         return
+
+    # =====================================
+    # LOAD LOCATION FILE
+    # =====================================
 
     try:
 
         locations = pd.read_csv(
             "data/hotspot_locations.csv"
         )
-        
-        st.success(
-            "Location file loaded successfully"
-        )
+
+        locations = locations.loc[
+            :,
+            ~locations.columns.duplicated()
+        ]
 
         if len(locations) < len(df):
 
@@ -106,6 +139,13 @@ def show_hotspot_detection():
                 len(df)
             ).reset_index(drop=True)
 
+        if "Location" in df.columns:
+
+            df.drop(
+                columns=["Location"],
+                inplace=True
+            )
+
         df = pd.concat(
             [
                 df.reset_index(drop=True),
@@ -114,34 +154,87 @@ def show_hotspot_detection():
             axis=1
         )
 
+        # REMOVE DUPLICATE COLUMNS AGAIN
+        df = df.loc[:, ~df.columns.duplicated()]
+
     except Exception as e:
 
         st.error(
             f"Location file error: {e}"
         )
+
         return
 
-    st.subheader("Available Columns")
+    # =====================================
+    # DETECT AQI COLUMN
+    # =====================================
 
-    st.write(df.columns.tolist())
+    if "AQI" in df.columns:
 
-    if "AQI" not in df.columns:
+        aqi_col = "AQI"
+
+    elif "Calculated_AQI" in df.columns:
+
+        aqi_col = "Calculated_AQI"
+
+    elif "predicted_aqi" in df.columns:
+
+        aqi_col = "predicted_aqi"
+
+    else:
 
         st.error(
-            "AQI column not found in uploaded dataset."
+            "AQI column not found."
         )
+
+        st.write(
+            "Available Columns:"
+        )
+
+        st.write(
+            df.columns.tolist()
+        )
+
         return
+
+    # =====================================
+    # FIX DUPLICATE AQI COLUMN ISSUE
+    # =====================================
+
+    if isinstance(
+        df[aqi_col],
+        pd.DataFrame
+    ):
+
+        df[aqi_col] = df[
+            aqi_col
+        ].iloc[:, 0]
+
+    df[aqi_col] = pd.to_numeric(
+        df[aqi_col],
+        errors="coerce"
+    )
+
+    df = df.dropna(
+        subset=[aqi_col]
+    )
+
+    # =====================================
+    # LOCATION COLUMN
+    # =====================================
 
     location_col = None
 
     for col in df.columns:
 
         if col.lower() in [
+
             "location",
             "area",
             "station",
             "place",
             "location_name"
+
         ]:
 
             location_col = col
@@ -150,26 +243,43 @@ def show_hotspot_detection():
     if location_col is None:
 
         df["Location"] = [
+
             f"Location {i+1}"
+
             for i in range(len(df))
+
         ]
 
         location_col = "Location"
 
-    df["Hotspot_Level"] = df["AQI"].apply(
+    # =====================================
+    # HOTSPOT ANALYSIS
+    # =====================================
+
+    df["Hotspot_Level"] = df[
+        aqi_col
+    ].apply(
         get_hotspot_level
     )
 
     df["Risk_Score"] = round(
-        (df["AQI"] / 500) * 100,
+        (df[aqi_col] / 500) * 100,
         2
     )
 
-    df["Recommendation"] = df["AQI"].apply(
+    df["Recommendation"] = df[
+        aqi_col
+    ].apply(
         recommendation
     )
 
-    st.subheader("📊 Hotspot Summary")
+    # =====================================
+    # SUMMARY
+    # =====================================
+
+    st.subheader(
+        "📊 Hotspot Summary"
+    )
 
     col1, col2, col3, col4 = st.columns(4)
 
@@ -184,7 +294,11 @@ def show_hotspot_detection():
 
         st.metric(
             "Critical Hotspots",
-            len(df[df["AQI"] > 400])
+            len(
+                df[
+                    df[aqi_col] > 400
+                ]
+            )
         )
 
     with col3:
@@ -193,9 +307,9 @@ def show_hotspot_detection():
             "Severe Hotspots",
             len(
                 df[
-                    (df["AQI"] > 300)
+                    (df[aqi_col] > 300)
                     &
-                    (df["AQI"] <= 400)
+                    (df[aqi_col] <= 400)
                 ]
             )
         )
@@ -204,15 +318,24 @@ def show_hotspot_detection():
 
         st.metric(
             "Average AQI",
-            round(df["AQI"].mean(), 2)
+            round(
+                df[aqi_col].mean(),
+                2
+            )
         )
 
     st.markdown("---")
 
-    st.subheader("🔥 Top 10 Hotspots")
+    # =====================================
+    # TOP 10 HOTSPOTS
+    # =====================================
+
+    st.subheader(
+        "🔥 Top 10 Hotspots"
+    )
 
     top_hotspots = df.sort_values(
-        by="AQI",
+        by=aqi_col,
         ascending=False
     ).head(10)
 
@@ -220,20 +343,26 @@ def show_hotspot_detection():
         top_hotspots[
             [
                 location_col,
-                "AQI",
+                aqi_col,
                 "Risk_Score",
                 "Hotspot_Level"
             ]
         ],
-        width="stretch"
+        use_container_width=True
     )
 
     st.markdown("---")
 
-    st.subheader("🚨 Critical Hotspots")
+    # =====================================
+    # CRITICAL HOTSPOTS
+    # =====================================
+
+    st.subheader(
+        "🚨 Critical Hotspots"
+    )
 
     critical = df[
-        df["AQI"] > 300
+        df[aqi_col] > 300
     ]
 
     if len(critical) > 0:
@@ -242,13 +371,13 @@ def show_hotspot_detection():
             critical[
                 [
                     location_col,
-                    "AQI",
+                    aqi_col,
                     "Risk_Score",
                     "Hotspot_Level",
                     "Recommendation"
                 ]
             ],
-            width="stretch"
+            use_container_width=True
         )
 
     else:
@@ -259,16 +388,37 @@ def show_hotspot_detection():
 
     st.markdown("---")
 
-    st.subheader("🤖 AI Recommendations")
+    # =====================================
+    # AI RECOMMENDATIONS
+    # =====================================
+
+    st.subheader(
+        "🤖 AI Recommendations"
+    )
 
     st.dataframe(
         df[
             [
                 location_col,
-                "AQI",
+                aqi_col,
                 "Hotspot_Level",
                 "Recommendation"
             ]
         ],
-        width="stretch"
+        use_container_width=True
+    )
+
+    # =====================================
+    # DOWNLOAD REPORT
+    # =====================================
+
+    csv = df.to_csv(
+        index=False
+    )
+
+    st.download_button(
+        "⬇ Download Hotspot Report",
+        csv,
+        "hotspot_report.csv",
+        "text/csv"
     )

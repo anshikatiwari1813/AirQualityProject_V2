@@ -1,13 +1,12 @@
-import sqlite3
+from sqlalchemy import text
+from database.postgres_db import engine
 import pandas as pd
 
-conn = sqlite3.connect("air_quality.db")
+with engine.connect() as conn:
 
-df = pd.read_sql(
-    "SELECT * FROM predictions ORDER BY id DESC",
-    conn
-)
-
-conn.close()
+    df = pd.read_sql(
+        text("SELECT * FROM predictions ORDER BY id DESC"),
+        conn
+    )
 
 print(df)

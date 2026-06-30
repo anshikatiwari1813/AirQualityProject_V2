@@ -1,5 +1,6 @@
-import sqlite3
 from datetime import datetime
+from sqlalchemy import text
+from database.postgres_db import engine
 
 
 def save_prediction(
@@ -14,53 +15,62 @@ def save_prediction(
     category
 ):
 
-    predicted_aqi = float(predicted_aqi)
+    with engine.connect() as conn:
 
-    conn = sqlite3.connect(
-        "air_quality.db"
-    )
+        conn.execute(
+            text("""
+            INSERT INTO predictions (
 
-    cursor = conn.cursor()
+                prediction_time,
+                model_name,
 
-    cursor.execute(
-        """
-        INSERT INTO predictions (
+                pm25,
+                pm10,
+                no2,
+                so2,
+                co,
+                o3,
 
-            prediction_time,
-            model_name,
+                predicted_aqi,
+                category
 
-            pm25,
-            pm10,
-            no2,
-            so2,
-            co,
-            o3,
+            )
 
-            predicted_aqi,
-            category
+            VALUES (
 
+                :prediction_time,
+                :model_name,
+
+                :pm25,
+                :pm10,
+                :no2,
+                :so2,
+                :co,
+                :o3,
+
+                :predicted_aqi,
+                :category
+
+            )
+            """),
+
+            {
+
+                "prediction_time": datetime.now(),
+
+                "model_name": model_name,
+
+                "pm25": pm25,
+                "pm10": pm10,
+                "no2": no2,
+                "so2": so2,
+                "co": co,
+                "o3": o3,
+
+                "predicted_aqi": float(predicted_aqi),
+
+                "category": category
+            }
         )
 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        (
-            datetime.now().strftime(
-                "%Y-%m-%d %H:%M:%S"
-            ),
-
-            model_name,
-
-            pm25,
-            pm10,
-            no2,
-            so2,
-            co,
-            o3,
-
-            predicted_aqi,
-            category
-        )
-    )
-
-    conn.commit()
-    conn.close()
+        conn.commit()
