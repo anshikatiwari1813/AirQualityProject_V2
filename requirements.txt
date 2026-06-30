@@ -14,7 +14,7 @@ shap==0.48.0
 
 joblib==1.5.3
 
-tensorflow==2.21.0
+tensorflow==2.19.0
 
 plotly==6.1.2
 folium==0.20.0
