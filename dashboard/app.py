@@ -27,7 +27,7 @@ from modules.upload import show_upload
 from modules.eda import show_eda
 from modules.aqi_calculator import show_aqi_calculator
 from modules.xgboost_prediction import show_xgboost_prediction
-import modules.forecasting as forecasting
+import modules as forecasting
 from modules.explainability import show_explainability
 from modules.gis_map import show_gis_map
 from modules.source_attribution import show_source_attribution
