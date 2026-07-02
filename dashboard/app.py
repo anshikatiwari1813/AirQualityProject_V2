@@ -27,7 +27,7 @@ from modules.upload import show_upload
 from modules.eda import show_eda
 from modules.aqi_calculator import show_aqi_calculator
 from modules.xgboost_prediction import show_xgboost_prediction
-import modules as forecasting
+from modules.forecasting import show_forecasting
 from modules.explainability import show_explainability
 from modules.gis_map import show_gis_map
 from modules.source_attribution import show_source_attribution
@@ -88,7 +88,7 @@ elif page == "AQI Prediction (XGBoost)":
     show_xgboost_prediction()
 
 elif page == "LSTM Forecasting":
-    forecasting.show_forecasting()
+    show_forecasting()
 
 elif page == "Explainable AI":
     show_explainability()
