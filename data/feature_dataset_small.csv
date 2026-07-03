@@ -1,0 +1,1 @@
+City,Datetime,PM2.5,PM10,NO2,SO2,CO,O3,AQI,Hour,Day,Month,Year,Weekday,Season,AQI_Lag_1,AQI_Lag_6,AQI_Lag_24,AQI_Rolling_6,AQI_Rolling_24
