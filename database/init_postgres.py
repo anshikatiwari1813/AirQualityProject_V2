@@ -1,33 +1,44 @@
-
 from sqlalchemy import text
 from database.postgres_db import engine
 
 
 def initialize_database():
 
-    with engine.connect() as conn:
+    if engine is None:
+        print("DATABASE_URL not found. Skipping PostgreSQL initialization.")
+        return
 
-        conn.execute(text("""
-        CREATE TABLE IF NOT EXISTS predictions (
+    try:
 
-            id SERIAL PRIMARY KEY,
+        with engine.connect() as conn:
 
-            prediction_time TIMESTAMP,
+            conn.execute(text("""
+            CREATE TABLE IF NOT EXISTS predictions (
 
-            model_name VARCHAR(100),
+                id SERIAL PRIMARY KEY,
 
-            pm25 FLOAT,
-            pm10 FLOAT,
-            no2 FLOAT,
-            so2 FLOAT,
-            co FLOAT,
-            o3 FLOAT,
+                prediction_time TIMESTAMP,
 
-            predicted_aqi FLOAT,
+                model_name VARCHAR(100),
 
-            category VARCHAR(50)
+                pm25 FLOAT,
+                pm10 FLOAT,
+                no2 FLOAT,
+                so2 FLOAT,
+                co FLOAT,
+                o3 FLOAT,
 
-        )
-        """))
+                predicted_aqi FLOAT,
 
-        conn.commit()
+                category VARCHAR(50)
+
+            )
+            """))
+
+            conn.commit()
+
+        print("PostgreSQL Database Initialized Successfully")
+
+    except Exception as e:
+
+        print(f"Database Initialization Error: {e}")

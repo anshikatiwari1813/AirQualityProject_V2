@@ -16,7 +16,10 @@ st.set_page_config(
     layout="wide"
 )
 
-initialize_database()
+try:
+    initialize_database()
+except Exception as e:
+    print("Database Initialization Skipped:", e)
 
 # ====================================
 # IMPORT MODULES
