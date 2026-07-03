@@ -3,6 +3,7 @@ import pandas as pd
 import joblib
 import shap
 import matplotlib.pyplot as plt
+import numpy as np
 
 # =====================================
 # LOAD MODEL
@@ -11,11 +12,10 @@ import matplotlib.pyplot as plt
 @st.cache_resource
 def load_model():
 
-    model = joblib.load(
+    return joblib.load(
         "models/best_aqi_model.pkl"
     )
 
-    return model
 
 model = load_model()
 
@@ -39,18 +39,22 @@ def show_explainability():
         type=["csv"]
     )
 
-    if uploaded_file is not None:
+    if uploaded_file is None:
+        return
+
+    try:
 
         df = pd.read_csv(uploaded_file)
 
         st.success(
-            f"Dataset Loaded ({len(df)} rows)"
+            f"Dataset Loaded Successfully ({len(df)} rows)"
         )
 
-        st.subheader("Preview")
+        st.subheader("Dataset Preview")
 
         st.dataframe(
-            df.head()
+            df.head(),
+            width="stretch"
         )
 
         features = [
@@ -73,11 +77,26 @@ def show_explainability():
             "AQI_Rolling_24"
         ]
 
-        if st.button("Generate Explanation"):
+        missing = [
+            col for col in features
+            if col not in df.columns
+        ]
 
-            try:
+        if missing:
 
-                X = df[features].head(200)
+            st.error(
+                f"Missing Columns: {missing}"
+            )
+
+            return
+
+        if st.button("🚀 Generate Explanation"):
+
+            with st.spinner(
+                "Generating SHAP Explainability..."
+            ):
+
+                X = df[features].head(50)
 
                 explainer = shap.TreeExplainer(
                     model
@@ -87,28 +106,87 @@ def show_explainability():
                     X
                 )
 
-                st.subheader(
-                    "Feature Importance"
+                st.success(
+                    "SHAP Values Generated Successfully"
                 )
 
-                fig, ax = plt.subplots()
+                # =================================
+                # FEATURE IMPORTANCE TABLE
+                # =================================
+
+                st.subheader(
+                    "📊 Feature Importance Ranking"
+                )
+
+                importance = pd.DataFrame({
+
+                    "Feature": X.columns,
+
+                    "Importance":
+                    np.abs(
+                        shap_values
+                    ).mean(axis=0)
+
+                })
+
+                importance = (
+                    importance
+                    .sort_values(
+                        by="Importance",
+                        ascending=False
+                    )
+                )
+
+                st.dataframe(
+                    importance,
+                    width="stretch"
+                )
+
+                # =================================
+                # BAR CHART
+                # =================================
+
+                st.subheader(
+                    "📈 SHAP Feature Importance Chart"
+                )
+
+                st.bar_chart(
+                    importance.set_index(
+                        "Feature"
+                    )
+                )
+
+                # =================================
+                # SHAP SUMMARY PLOT
+                # =================================
+
+                st.subheader(
+                    "🧠 SHAP Summary Plot"
+                )
+
+                fig = plt.figure(
+                    figsize=(10, 6)
+                )
 
                 shap.summary_plot(
                     shap_values,
                     X,
+                    plot_type="bar",
                     show=False
                 )
 
                 st.pyplot(
-                    plt.gcf()
+                    fig
                 )
+
+                plt.close()
 
                 st.success(
                     "Explanation Generated Successfully"
                 )
 
-            except Exception as e:
+    except Exception as e:
 
-                st.error(
-                    f"Error: {e}"
-                )
+        st.error(
+            f"Explainability Error: {e}"
+        )
