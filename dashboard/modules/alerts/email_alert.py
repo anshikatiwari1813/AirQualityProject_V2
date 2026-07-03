@@ -1,6 +1,7 @@
 import requests
 import os
 
+
 def send_alert_email(aqi, category, receiver_email):
 
     api_key = os.getenv("RESEND_API_KEY")
@@ -35,7 +36,5 @@ def send_alert_email(aqi, category, receiver_email):
         json=payload
     )
 
-    if response.status_code in [200, 201]:
-        print("Alert Email Sent Successfully")
-    else:
-        print("Resend Error:", response.text)
+    if response.status_code not in [200, 201]:
+        raise Exception(response.text)

@@ -39,7 +39,7 @@ def show_alert_center():
 
     if st.button("📨 Send Test Alert"):
 
-        if email == "":
+        if not email:
 
             st.error(
                 "Enter email address first."
@@ -56,11 +56,11 @@ def show_alert_center():
                 )
 
                 st.success(
-                    "Alert Email Sent Successfully!"
+                    f"Alert Email Sent Successfully to {email}"
                 )
 
             except Exception as e:
 
                 st.error(
-                    str(e)
+                    f"Email Sending Failed: {str(e)}"
                 )
