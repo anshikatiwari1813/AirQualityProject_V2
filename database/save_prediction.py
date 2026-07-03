@@ -15,62 +15,72 @@ def save_prediction(
     category
 ):
 
-    with engine.connect() as conn:
+    if engine is None:
+        print("DATABASE_URL not configured. Prediction not saved.")
+        return
 
-        conn.execute(
-            text("""
-            INSERT INTO predictions (
+    try:
 
-                prediction_time,
-                model_name,
+        with engine.connect() as conn:
 
-                pm25,
-                pm10,
-                no2,
-                so2,
-                co,
-                o3,
+            conn.execute(
+                text("""
+                INSERT INTO predictions (
 
-                predicted_aqi,
-                category
+                    prediction_time,
+                    model_name,
 
+                    pm25,
+                    pm10,
+                    no2,
+                    so2,
+                    co,
+                    o3,
+
+                    predicted_aqi,
+                    category
+
+                )
+
+                VALUES (
+
+                    :prediction_time,
+                    :model_name,
+
+                    :pm25,
+                    :pm10,
+                    :no2,
+                    :so2,
+                    :co,
+                    :o3,
+
+                    :predicted_aqi,
+                    :category
+
+                )
+                """),
+
+                {
+
+                    "prediction_time": datetime.now(),
+
+                    "model_name": model_name,
+
+                    "pm25": pm25,
+                    "pm10": pm10,
+                    "no2": no2,
+                    "so2": so2,
+                    "co": co,
+                    "o3": o3,
+
+                    "predicted_aqi": float(predicted_aqi),
+
+                    "category": category
+                }
             )
 
-            VALUES (
+            conn.commit()
 
-                :prediction_time,
-                :model_name,
+    except Exception as e:
 
-                :pm25,
-                :pm10,
-                :no2,
-                :so2,
-                :co,
-                :o3,
-
-                :predicted_aqi,
-                :category
-
-            )
-            """),
-
-            {
-
-                "prediction_time": datetime.now(),
-
-                "model_name": model_name,
-
-                "pm25": pm25,
-                "pm10": pm10,
-                "no2": no2,
-                "so2": so2,
-                "co": co,
-                "o3": o3,
-
-                "predicted_aqi": float(predicted_aqi),
-
-                "category": category
-            }
-        )
-
-        conn.commit()
+        print("Database Save Error:", e)
