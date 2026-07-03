@@ -52,10 +52,23 @@ def show_gis_map():
 
     st.title("🌍 GIS AQI Monitoring Dashboard")
 
-    st.markdown("""
-    Interactive GIS-based Air Quality Monitoring
-    and Forecasting Dashboard
-    """)
+    st.markdown(
+        """
+        Interactive GIS-based Air Quality Monitoring
+        and Forecasting Dashboard
+        """
+    )
+
+    st.markdown(
+        """
+        <style>
+        iframe {
+            width: 100% !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
     try:
 
@@ -269,30 +282,26 @@ def show_gis_map():
 
     legend_html = """
     <div style="
-        position: fixed;
-        bottom: 50px;
-        left: 50px;
-        width: 220px;
-        height: 230px;
-        background-color: white;
+        position:absolute;
+        bottom:20px;
+        left:20px;
+        width:220px;
+        background-color:white;
         border:2px solid grey;
         z-index:9999;
         font-size:14px;
         padding:10px;
+        border-radius:8px;
+        box-shadow:2px 2px 6px rgba(0,0,0,0.3);
     ">
 
     <b>AQI Legend</b><br><br>
 
     🟢 Good (0-50)<br>
-
     🔵 Satisfactory (51-100)<br>
-
     🟠 Moderate (101-200)<br>
-
     🔴 Poor (201-300)<br>
-
     🟣 Very Poor (301-400)<br>
-
     ⚫ Severe (401-500)
 
     </div>
@@ -318,9 +327,9 @@ def show_gis_map():
 
         m,
 
-        width=1200,
+        height=650,
 
-        height=650
+        use_container_width=True
 
     )
 
@@ -336,7 +345,7 @@ def show_gis_map():
 
         data,
 
-        use_container_width=True
+        width="stretch"
 
     )
 
