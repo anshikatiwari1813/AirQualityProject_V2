@@ -277,65 +277,50 @@ def show_gis_map():
     ).add_to(m)
 
     # =========================
-# AQI LEGEND
-# =========================
+    # AQI LEGEND
+    # =========================
 
-st.subheader("🗺 AQI Legend")
+    st.subheader("🗺 AQI Legend")
 
-col_leg1, col_leg2, col_leg3 = st.columns(3)
+    col_leg1, col_leg2, col_leg3 = st.columns(3)
 
-with col_leg1:
+    with col_leg1:
+        st.success("🟢 Good (0-50)")
+        st.info("🔵 Satisfactory (51-100)")
 
-    st.success(
-        "🟢 Good (0-50)"
-    )
+    with col_leg2:
+        st.warning("🟠 Moderate (101-200)")
+        st.error("🔴 Poor (201-300)")
 
-    st.info(
-        "🔵 Satisfactory (51-100)"
-    )
+    with col_leg3:
+        st.markdown(
+            """
+            <div style="
+                background-color:#9C27B0;
+                color:white;
+                padding:10px;
+                border-radius:8px;
+                text-align:center;
+                margin-bottom:10px;">
+                🟣 Very Poor (301-400)
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-with col_leg2:
-
-    st.warning(
-        "🟠 Moderate (101-200)"
-    )
-
-    st.error(
-        "🔴 Poor (201-300)"
-    )
-
-with col_leg3:
-
-    st.markdown(
-        """
-        <div style="
-            background-color:#9C27B0;
-            color:white;
-            padding:10px;
-            border-radius:8px;
-            text-align:center;
-            margin-bottom:10px;
-        ">
-        🟣 Very Poor (301-400)
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        """
-        <div style="
-            background-color:black;
-            color:white;
-            padding:10px;
-            border-radius:8px;
-            text-align:center;
-        ">
-        ⚫ Severe (401-500)
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+        st.markdown(
+            """
+            <div style="
+                background-color:black;
+                color:white;
+                padding:10px;
+                border-radius:8px;
+                text-align:center;">
+                ⚫ Severe (401-500)
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     # =========================
     # LAYER CONTROL
@@ -348,29 +333,20 @@ with col_leg3:
     # =========================
 
     st_folium(
-
         m,
-
         height=650,
-
         use_container_width=True
-
     )
 
     # =========================
     # AQI STATION TABLE
     # =========================
 
-    st.subheader(
-        "📊 AQI Hotspot Information"
-    )
+    st.subheader("📊 AQI Hotspot Information")
 
     st.dataframe(
-
         data,
-
-        width="stretch"
-
+        use_container_width=True
     )
 
     # =========================
@@ -378,34 +354,18 @@ with col_leg3:
     # =========================
 
     avg_aqi = data["AQI"].mean()
-
     max_aqi = data["AQI"].max()
-
     min_aqi = data["AQI"].min()
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-
-        st.metric(
-            "Average AQI",
-            round(avg_aqi, 2)
-        )
+        st.metric("Average AQI", round(avg_aqi, 2))
 
     with col2:
-
-        st.metric(
-            "Highest AQI",
-            int(max_aqi)
-        )
+        st.metric("Highest AQI", int(max_aqi))
 
     with col3:
+        st.metric("Lowest AQI", int(min_aqi))
 
-        st.metric(
-            "Lowest AQI",
-            int(min_aqi)
-        )
-
-    st.success(
-        "GIS AQI Dashboard Loaded Successfully"
-    )
+    st.success("GIS AQI Dashboard Loaded Successfully")
