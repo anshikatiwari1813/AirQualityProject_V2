@@ -277,40 +277,64 @@ def show_gis_map():
     ).add_to(m)
 
     # =========================
-    # AQI LEGEND
-    # =========================
+# AQI LEGEND
+# =========================
 
-    legend_html = """
-    <div style="
-        position:absolute;
-        bottom:20px;
-        left:20px;
-        width:220px;
-        background-color:white;
-        border:2px solid grey;
-        z-index:9999;
-        font-size:14px;
-        padding:10px;
-        border-radius:8px;
-        box-shadow:2px 2px 6px rgba(0,0,0,0.3);
-    ">
+st.subheader("🗺 AQI Legend")
 
-    <b>AQI Legend</b><br><br>
+col_leg1, col_leg2, col_leg3 = st.columns(3)
 
-    🟢 Good (0-50)<br>
-    🔵 Satisfactory (51-100)<br>
-    🟠 Moderate (101-200)<br>
-    🔴 Poor (201-300)<br>
-    🟣 Very Poor (301-400)<br>
-    ⚫ Severe (401-500)
+with col_leg1:
 
-    </div>
-    """
+    st.success(
+        "🟢 Good (0-50)"
+    )
 
-    m.get_root().html.add_child(
-        folium.Element(
-            legend_html
-        )
+    st.info(
+        "🔵 Satisfactory (51-100)"
+    )
+
+with col_leg2:
+
+    st.warning(
+        "🟠 Moderate (101-200)"
+    )
+
+    st.error(
+        "🔴 Poor (201-300)"
+    )
+
+with col_leg3:
+
+    st.markdown(
+        """
+        <div style="
+            background-color:#9C27B0;
+            color:white;
+            padding:10px;
+            border-radius:8px;
+            text-align:center;
+            margin-bottom:10px;
+        ">
+        🟣 Very Poor (301-400)
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        """
+        <div style="
+            background-color:black;
+            color:white;
+            padding:10px;
+            border-radius:8px;
+            text-align:center;
+        ">
+        ⚫ Severe (401-500)
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
     # =========================
