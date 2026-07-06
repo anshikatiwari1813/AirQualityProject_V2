@@ -29,6 +29,8 @@ def show_alert_center():
 
     test_aqi = st.number_input(
         "Test AQI",
+        min_value=0,
+        max_value=500,
         value=250
     )
 
@@ -42,25 +44,30 @@ def show_alert_center():
         if not email:
 
             st.error(
-                "Enter email address first."
+                "Please enter receiver email."
             )
 
         else:
 
             try:
 
-                send_alert_email(
+                result = send_alert_email(
                     test_aqi,
                     category,
                     email
                 )
 
                 st.success(
-                    f"Alert Email Sent Successfully to {email}"
+                    f"✅ Alert Email Sent Successfully to {email}"
+                )
+
+                st.write(
+                    "Response:",
+                    result
                 )
 
             except Exception as e:
 
                 st.error(
-                    f"Email Sending Failed: {str(e)}"
+                    f"❌ Email Sending Failed: {str(e)}"
                 )
