@@ -10,6 +10,15 @@ def send_alert_email(aqi, category, receiver_email):
     sender_email = os.getenv("ALERT_EMAIL")
     app_password = os.getenv("EMAIL_PASS")
 
+    print("========== ENV DEBUG ==========")
+    print("Sender Email:", sender_email)
+    print(
+        "Password Length:",
+        len(app_password) if app_password else "NOT FOUND"
+    )
+    print("Receiver:", receiver_email)
+    print("===============================")
+
     if not sender_email:
         raise Exception(
             "ALERT_EMAIL environment variable not found."
@@ -50,49 +59,66 @@ def send_alert_email(aqi, category, receiver_email):
         """
 
         message = MIMEMultipart()
+
         message["From"] = sender_email
         message["To"] = receiver_email
         message["Subject"] = subject
 
         message.attach(
-            MIMEText(html_body, "html")
+            MIMEText(
+                html_body,
+                "html"
+            )
         )
+
+        print("Connecting to Gmail SMTP...")
 
         server = smtplib.SMTP(
             "smtp.gmail.com",
-            587
+            587,
+            timeout=30
         )
 
+        server.set_debuglevel(1)
+
+        print("Starting TLS...")
         server.starttls()
 
+        print("Logging in...")
         server.login(
             sender_email,
             app_password
         )
 
-        server.sendmail(
+        print("Sending Email...")
+
+        result = server.sendmail(
             sender_email,
             receiver_email,
             message.as_string()
         )
 
+        print("SENDMAIL RESULT:", result)
+
         server.quit()
 
-        print("========== SMTP DEBUG ==========")
+        print("========== SMTP SUCCESS ==========")
         print("Email sent successfully")
-        print("To:", receiver_email)
+        print("Receiver:", receiver_email)
         print("AQI:", aqi)
         print("Category:", category)
-        print("================================")
+        print("==================================")
 
         return {
             "status": "success",
-            "message": "Email sent successfully"
+            "message": "Email sent successfully",
+            "smtp_result": result
         }
 
     except Exception as e:
 
         print("========== SMTP ERROR ==========")
+        print(type(e).__name__)
         print(str(e))
         print("================================")
 
