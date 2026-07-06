@@ -41,37 +41,9 @@ def show_alert_center():
 
     if st.button("📨 Send Test Alert"):
 
-    st.write("BUTTON CLICKED")
+        st.write("BUTTON CLICKED")
 
-    print("BUTTON CLICKED")
-
-    if not email:
-        st.error("Enter email address first.")
-
-    else:
-        try:
-
-            print("CALLING send_alert_email()")
-
-            send_alert_email(
-                test_aqi,
-                category,
-                email
-            )
-
-            print("FUNCTION COMPLETED")
-
-            st.success(
-                f"Alert Email Sent Successfully to {email}"
-            )
-
-        except Exception as e:
-
-            print("ERROR:", str(e))
-
-            st.error(
-                f"Email Sending Failed: {str(e)}"
-            )
+        print("BUTTON CLICKED")
 
         if not email:
 
@@ -83,11 +55,15 @@ def show_alert_center():
 
             try:
 
+                print("CALLING send_alert_email()")
+
                 result = send_alert_email(
                     test_aqi,
                     category,
                     email
                 )
+
+                print("FUNCTION COMPLETED")
 
                 st.success(
                     f"✅ Alert Email Sent Successfully to {email}"
@@ -99,6 +75,8 @@ def show_alert_center():
                 )
 
             except Exception as e:
+
+                print("ERROR:", str(e))
 
                 st.error(
                     f"❌ Email Sending Failed: {str(e)}"
