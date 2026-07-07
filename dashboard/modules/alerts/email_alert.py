@@ -10,24 +10,18 @@ def send_alert_email(aqi, category, receiver_email):
     sender_email = os.getenv("ALERT_EMAIL")
     app_password = os.getenv("EMAIL_PASS")
 
-    print("========== ENV DEBUG ==========")
-    print("Sender Email:", sender_email)
-    print(
-        "Password Length:",
-        len(app_password) if app_password else "NOT FOUND"
-    )
+    print("========== EMAIL DEBUG ==========")
+    print("Sender:", sender_email)
     print("Receiver:", receiver_email)
-    print("===============================")
+    print("AQI:", aqi)
+    print("Category:", category)
+    print("=================================")
 
     if not sender_email:
-        raise Exception(
-            "ALERT_EMAIL environment variable not found."
-        )
+        raise Exception("ALERT_EMAIL environment variable not found")
 
     if not app_password:
-        raise Exception(
-            "EMAIL_PASS environment variable not found."
-        )
+        raise Exception("EMAIL_PASS environment variable not found")
 
     try:
 
@@ -44,7 +38,7 @@ def send_alert_email(aqi, category, receiver_email):
         <p><b>Category:</b> {category}</p>
 
         <p>
-        Please take necessary precautions based on the current
+        Please take necessary precautions based on current
         air quality conditions.
         </p>
 
@@ -65,26 +59,20 @@ def send_alert_email(aqi, category, receiver_email):
         message["Subject"] = subject
 
         message.attach(
-            MIMEText(
-                html_body,
-                "html"
-            )
+            MIMEText(html_body, "html")
         )
 
-        print("Connecting to Gmail SMTP...")
+        print("Connecting SMTP...")
 
         server = smtplib.SMTP(
             "smtp.gmail.com",
-            587,
-            timeout=30
+            587
         )
 
-        server.set_debuglevel(1)
-
-        print("Starting TLS...")
         server.starttls()
 
-        print("Logging in...")
+        print("Logging in SMTP...")
+
         server.login(
             sender_email,
             app_password
@@ -92,35 +80,24 @@ def send_alert_email(aqi, category, receiver_email):
 
         print("Sending Email...")
 
-        result = server.sendmail(
+        server.sendmail(
             sender_email,
             receiver_email,
             message.as_string()
         )
 
-        print("SENDMAIL RESULT:", result)
-
         server.quit()
 
-        print("========== SMTP SUCCESS ==========")
-        print("Email sent successfully")
-        print("Receiver:", receiver_email)
-        print("AQI:", aqi)
-        print("Category:", category)
-        print("==================================")
+        print("EMAIL SENT SUCCESSFULLY")
 
         return {
             "status": "success",
-            "message": "Email sent successfully",
-            "smtp_result": result
+            "message": "Email sent successfully"
         }
 
     except Exception as e:
 
-        print("========== SMTP ERROR ==========")
-        print(type(e).__name__)
-        print(str(e))
-        print("================================")
+        print("SMTP ERROR:", str(e))
 
         raise Exception(
             f"Failed to send email: {str(e)}"
