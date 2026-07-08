@@ -1,5 +1,9 @@
+print("===== USING ROOT EMAIL ALERT FILE =====")
 import smtplib
 from email.mime.text import MIMEText
+import alerts.email_alert
+
+st.write("EMAIL MODULE:", alerts.email_alert.__file__)
 
 
 def send_alert_email(aqi, category, receiver_email):
