@@ -1,13 +1,17 @@
-print("===== USING ROOT EMAIL ALERT FILE =====")
 import smtplib
-import streamlit as st
-from email.mime.text import MIMEText
-import alerts.email_alert
 
-st.write("EMAIL MODULE:", alerts.email_alert.__file__)
+from email.mime.text import MIMEText
+
+
+print("===== USING ROOT EMAIL ALERT FILE =====")
 
 
 def send_alert_email(aqi, category, receiver_email):
+
+    print("========== EMAIL FUNCTION STARTED ==========")
+    print("Receiver:", receiver_email)
+    print("AQI:", aqi)
+    print("Category:", category)
 
     sender_email = "anshika.tiwari1829@gmail.com"
     sender_password = "cfxjixpgzrtnyhgw"
@@ -17,9 +21,9 @@ def send_alert_email(aqi, category, receiver_email):
     body = f"""
 Air Quality Alert
 
-Predicted AQI: {aqi}
+Predicted AQI : {aqi}
 
-Category: {category}
+Category : {category}
 
 Please take necessary precautions.
 
@@ -35,17 +39,32 @@ Air Quality Prediction and Monitoring System
 
     try:
 
+        print("Connecting to Gmail SMTP...")
+
         server = smtplib.SMTP(
             "smtp.gmail.com",
-            587
+            587,
+            timeout=30
         )
 
+        print("Connected Successfully")
+
+        print("Starting TLS...")
+
         server.starttls()
+
+        print("TLS Started")
+
+        print("Logging into Gmail...")
 
         server.login(
             sender_email,
             sender_password
         )
+
+        print("LOGIN SUCCESS")
+
+        print("Sending Email...")
 
         server.sendmail(
             sender_email,
@@ -53,10 +72,22 @@ Air Quality Prediction and Monitoring System
             msg.as_string()
         )
 
+        print("EMAIL SENT SUCCESSFULLY")
+
         server.quit()
 
-        print("Alert Email Sent Successfully")
+        print("SMTP Connection Closed")
+
+        return {
+            "status": "success",
+            "message": "Email Sent Successfully"
+        }
 
     except Exception as e:
 
-        print("Email Error:", e)
+        print("========== SMTP ERROR ==========")
+        print(type(e).__name__)
+        print(str(e))
+        print("===============================")
+
+        raise Exception(str(e))
