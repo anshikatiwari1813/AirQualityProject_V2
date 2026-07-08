@@ -1,5 +1,6 @@
 print("===== USING ROOT EMAIL ALERT FILE =====")
 import smtplib
+import streamlit as st
 from email.mime.text import MIMEText
 import alerts.email_alert
 
