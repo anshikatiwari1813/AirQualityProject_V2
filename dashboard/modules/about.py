@@ -12,6 +12,7 @@ def show_about():
     - Python
     - Pandas
     - Scikit-Learn
+    - Random Forest
     - XGBoost
     - TensorFlow
     - Streamlit

@@ -2,16 +2,15 @@ import streamlit as st
 import pandas as pd
 import os
 
+
 def show_reports():
 
     st.title("📄 AQI Analysis Reports")
 
-    st.markdown(
-        """
-        View model performance, feature importance
-        and project summary reports.
-        """
-    )
+    st.markdown("""
+    View model performance, feature importance,
+    evaluation metrics and project summary.
+    """)
 
     # =====================================
     # PROJECT SUMMARY
@@ -19,23 +18,24 @@ def show_reports():
 
     st.subheader("📌 Project Summary")
 
-    st.info(
-        """
-        Air Quality Prediction and Monitoring System
+    st.info("""
+### Air Quality Prediction and Monitoring System
 
-        Models Used:
-        • XGBoost (Current AQI Prediction)
-        • Multivariate LSTM (AQI Forecasting)
+**Machine Learning Models**
+- 🌲 Random Forest Regressor (Current AQI Prediction)
+- 🧠 Multivariate LSTM (AQI Forecasting)
 
-        Features:
-        • AQI Calculator
-        • AQI Prediction
-        • AQI Forecasting
-        • Explainable AI
-        • Health Advisory
-        • EDA Dashboard
-        """
-    )
+### Major Features
+- AQI Calculator
+- Current AQI Prediction
+- Future AQI Forecasting
+- Explainable AI (SHAP)
+- Health Advisory
+- GIS Air Quality Map
+- Hotspot Detection
+- Prediction History
+- Database Analytics
+""")
 
     # =====================================
     # MODEL PERFORMANCE
@@ -48,44 +48,44 @@ def show_reports():
         "Model": [
             "Random Forest",
             "XGBoost",
-            "LSTM"
+            "Multivariate LSTM"
         ],
 
         "R² Score": [
-            0.7570,
-            0.7619,
-            0.9676
+            0.9872,
+            0.9808,
+            0.7176
         ],
 
         "MAE": [
-            33.57,
-            33.05,
-            11.39
+            1.43,
+            1.57,
+            6.74
         ],
 
         "RMSE": [
-            50.18,
-            49.68,
-            18.54
+            2.91,
+            3.56,
+            11.24
         ]
 
     })
 
     st.dataframe(
         performance,
-        width="stretch"
+        use_container_width=True
     )
 
     # =====================================
-    # BEST MODEL
+    # BEST MODELS
     # =====================================
 
     st.success(
-        "🏆 Best Forecasting Model: LSTM (R² = 0.9676)"
+        "🏆 Best AQI Prediction Model: Random Forest (R² = 0.9872)"
     )
 
     st.success(
-        "🏆 Best AQI Prediction Model: XGBoost (R² = 0.7619)"
+        "📈 Forecasting Model: Multivariate LSTM (R² = 0.7176)"
     )
 
     # =====================================
@@ -94,35 +94,29 @@ def show_reports():
 
     st.subheader("📊 Feature Importance")
 
-    feature_file = (
-        "models/pollutant_feature_importance.csv"
-    )
+    feature_file = "feature_importance.csv"
 
     if os.path.exists(feature_file):
 
-        importance = pd.read_csv(
-            feature_file
-        )
+        importance = pd.read_csv(feature_file)
 
         st.dataframe(
             importance,
-            width="stretch"
+            use_container_width=True
         )
 
         st.bar_chart(
-            importance.set_index(
-                "Feature"
-            )
+            importance.set_index("Feature")
         )
 
     else:
 
         st.warning(
-            "Feature Importance File Not Found"
+            "Feature Importance file not found."
         )
 
     # =====================================
-    # AQI CATEGORIES
+    # AQI CATEGORY TABLE
     # =====================================
 
     st.subheader("🌍 AQI Categories")
@@ -146,6 +140,7 @@ def show_reports():
             "Very Poor 🟣",
             "Severe ⚫"
         ]
+
     })
 
     st.table(category_df)
@@ -154,15 +149,13 @@ def show_reports():
     # DOWNLOAD REPORT
     # =====================================
 
-    st.subheader("⬇ Download Report")
+    st.subheader("⬇ Download Evaluation Report")
 
-    csv = performance.to_csv(
-        index=False
-    )
+    csv = performance.to_csv(index=False)
 
     st.download_button(
-        label="Download Model Report",
+        label="📥 Download Model Performance Report",
         data=csv,
-        file_name="AQI_Model_Report.csv",
+        file_name="AQI_Model_Performance.csv",
         mime="text/csv"
     )

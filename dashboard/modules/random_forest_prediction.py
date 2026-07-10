@@ -57,12 +57,12 @@ def get_aqi_category(aqi):
 # PAGE FUNCTION
 # ======================================
 
-def show_xgboost_prediction():
+def show_random_forest_prediction():
 
-    st.title("⚡ XGBoost AQI Prediction")
+    st.title("🌲 Random Forest AQI Prediction")
 
     st.markdown(
-        "Predict AQI using pollutant values and historical AQI features."
+       "Predict AQI using the trained Random Forest Regression model."
     )
 
     col1, col2 = st.columns(2)
@@ -175,7 +175,7 @@ def show_xgboost_prediction():
         )
 
         save_prediction(
-            "XGBoost",
+            "Random Forest",
             pm25,
             pm10,
             no2,

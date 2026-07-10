@@ -13,7 +13,7 @@ def show_home():
     """)
 
     st.success(
-        "✅ System Ready | XGBoost + LSTM Models Successfully Integrated"
+        "✅ System Ready | Random Forest + LSTM Models Successfully Integrated"
     )
 
     # =========================
@@ -25,13 +25,13 @@ def show_home():
     with col1:
         st.metric(
             "Best Model",
-            "XGBoost"
+            "Random Forest"
         )
 
     with col2:
         st.metric(
-            "XGBoost R²",
-            "0.7619"
+            "Random Forest R²",
+            "0.9872"
         )
 
     with col3:
@@ -58,7 +58,7 @@ def show_home():
 
     with col1:
 
-        st.info("🤖 AQI Prediction using XGBoost")
+        st.info("🤖 AQI Prediction using Random Forest")
 
         st.info("📈 AQI Forecasting using LSTM")
 
@@ -156,7 +156,7 @@ def show_home():
 
     ⬇
 
-    🤖 XGBoost Prediction
+    🤖 Random Forest Prediction
 
     ⬇
 
