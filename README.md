@@ -1,11 +1,12 @@
 🌍 Air Quality Prediction & Monitoring System
-
 An intelligent AI-powered web application for real-time Air Quality Index (AQI) prediction, forecasting, visualization, and monitoring using Machine Learning, Deep Learning, Explainable AI, GIS Mapping, PostgreSQL, and Brevo Email API.
 
 The system predicts current AQI using a Random Forest Regressor, forecasts future AQI using a Multivariate LSTM model, provides interactive visualizations, explains model predictions using SHAP, stores prediction history in PostgreSQL, displays pollution hotspots through GIS mapping, and sends automated email alerts when air quality exceeds predefined thresholds.
 
+
+
 🚀 Key Features
-🌍 Real-Time AQI Prediction using Random Forest
+🌍 Real-Time AQI Prediction using Random Forest\
 📈 Future AQI Forecasting using Multivariate LSTM
 📊 Interactive EDA Dashboard
 🧮 AQI Calculator
